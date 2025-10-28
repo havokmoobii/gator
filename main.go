@@ -8,7 +8,15 @@ import (
 
 func main() {
 
-	config, err := config.Read()
+	configFile, err := config.Read()
 
-	fmt.Println(config, err)
+	fmt.Println(configFile, err)
+
+	configFile.SetUser("Lane")
+
+	fmt.Println(configFile, err)
+
+	configFile, err = config.Read()
+
+	fmt.Println(configFile, err)
 }

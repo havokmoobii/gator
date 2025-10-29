@@ -2,21 +2,42 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/havokmoobii/gator/internal/config"
 )
 
 func main() {
 
-	configFile, err := config.Read()
+	if len(os.Args) < 2 {
+		fmt.Println("Error: Expected command.")
+		os.Exit(1)
+	}
 
-	fmt.Println(configFile, err)
+	var cliState state
+	cfg, err := config.Read()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	cliState.config = &cfg
 
-	configFile.SetUser("Lane")
+	var cmds commands
+	cmds.handlerFunctions = make(map[string]func(*state, command) error)
+	cmds.register("login", handlerLogin)
 
-	fmt.Println(configFile, err)
+	var cmd command
+	cmd.name = os.Args[1]
 
-	configFile, err = config.Read()
+	for i := 2; i < len(os.Args); i++ {
+		cmd.arguments = append(cmd.arguments, os.Args[i])
+	}
 
-	fmt.Println(configFile, err)
+	err = cmds.run(&cliState, cmd)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	os.Exit(0)
 }

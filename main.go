@@ -1,9 +1,13 @@
 package main
 
+import _ "github.com/lib/pq"
+
 import (
 	"fmt"
 	"os"
+	"database/sql"
 
+	"github.com/havokmoobii/gator/internal/database"
 	"github.com/havokmoobii/gator/internal/config"
 )
 
@@ -21,6 +25,10 @@ func main() {
 		os.Exit(1)
 	}
 	cliState.config = &cfg
+
+	db, err := sql.Open("postgres", cliState.config.Db_url)
+	dbQueries := database.New(db)
+	cliState.db = dbQueries
 
 	var cmds commands
 	cmds.handlerFunctions = make(map[string]func(*state, command) error)

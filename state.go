@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/havokmoobii/gator/internal/database"
 	"github.com/havokmoobii/gator/internal/config"
 )
 
  type state struct {
+	db  *database.Queries
 	config *config.Config
  }
 

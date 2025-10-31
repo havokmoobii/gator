@@ -33,6 +33,8 @@ func main() {
 	var cmds commands
 	cmds.handlerFunctions = make(map[string]func(*state, command) error)
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
+	cmds.register("reset", handlerReset)
 
 	var cmd command
 	cmd.name = os.Args[1]

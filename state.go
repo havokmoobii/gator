@@ -3,6 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
+	"context"
+	"time"
+	"github.com/google/uuid"
 
 	"github.com/havokmoobii/gator/internal/database"
 	"github.com/havokmoobii/gator/internal/config"
@@ -40,12 +43,55 @@ import (
 		return errors.New("Error: Expected username.")
 	}
 
-	err := s.config.SetUser(cmd.arguments[0])
+	_, err := s.db.GetUser(context.Background(), cmd.arguments[0])
+	if err != nil {
+		return err
+	}
+
+	err = s.config.SetUser(cmd.arguments[0])
 	if err != nil {
 		return err
 	}
 
 	fmt.Println("User", cmd.arguments[0], "has been set.")
+
+	return nil
+ }
+
+ func handlerRegister (s *state, cmd command) error {
+	if len(cmd.arguments) == 0 {
+		return errors.New("Error: Expected username.")
+	}
+
+	userArgs := database.CreateUserParams{
+		ID: uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name: cmd.arguments[0],
+	}
+
+	_, err := s.db.CreateUser(context.Background(), userArgs)
+	if err != nil {
+		return err
+	}
+
+	err = s.config.SetUser(cmd.arguments[0])
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("User", userArgs.Name, "created successfully!")
+
+	return nil
+ }
+
+ func handlerReset (s *state, cmd command) error {
+	err := s.db.ResetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Database reset successfully!")
 
 	return nil
  }

@@ -95,3 +95,20 @@ import (
 
 	return nil
  }
+
+ func handlerUsers (s *state, cmd command) error {
+	usernames, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, username := range usernames {
+		if username == s.config.Current_user_name {
+			fmt.Println(username, "(current)")
+			continue
+		}
+		fmt.Println(username)
+	}
+
+	return nil
+ }

@@ -12,10 +12,6 @@ RETURNING *;
 SELECT * FROM users
 WHERE name = $1 LIMIT 1;
 
--- name: GetUserID :one
-SELECT id FROM users
-WHERE name = $1 LIMIT 1;
-
 -- name: GetUserName :one
 SELECT name FROM users
 WHERE id = $1 LIMIT 1;

@@ -31,14 +31,7 @@ func main() {
 	cliState.db = dbQueries
 
 	var cmds commands
-	cmds.handlerFunctions = make(map[string]func(*state, command) error)
-	cmds.register("login", handlerLogin)
-	cmds.register("register", handlerRegister)
-	cmds.register("reset", handlerReset)
-	cmds.register("users", handlerUsers)
-	cmds.register("agg", handlerAgg)
-	cmds.register("addfeed", handlerAddFeed)
-	cmds.register("feeds", handlerFeeds)
+	cmds = register_commands(cmds)
 
 	var cmd command
 	cmd.name = os.Args[1]

@@ -7,8 +7,6 @@ import (
 	"io"
 	"encoding/xml"
 	"html"
-	
-	"fmt"
 )
 
 type RSSFeed struct {
@@ -27,7 +25,7 @@ type RSSItem struct {
 	PubDate     string `xml:"pubDate"`
 }
 
-func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
+func fetchFeed(feedURL string) (*RSSFeed, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
 	defer cancel()
 
@@ -53,19 +51,15 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 		return nil, err
 	}
 
-	var rss []RSSFeed
+	var rss *RSSFeed
 	err = xml.Unmarshal(data, &rss)
 	if err != nil {
 		return nil, err
 	}
 
-	for i, _ := range rss {
-		rss[i].unescapeString()
-	}
+	rss.unescapeString()
 
-	fmt.Println(rss)
-
-	return nil, nil
+	return rss, nil
 }
 
 // Removes escaped HTML characters from an RSS feed.

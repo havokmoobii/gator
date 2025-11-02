@@ -13,4 +13,4 @@ CREATE TABLE feed_follows (
 );
 
 -- +goose Down
-DROP TABLE feeds;
+DROP TABLE feed_follows;

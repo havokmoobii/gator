@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"context"
+	"strings"
 
 	"github.com/havokmoobii/gator/internal/database"
 	"github.com/havokmoobii/gator/internal/config"
@@ -48,6 +49,7 @@ func register_commands(cmds commands) commands {
 	cmds.register("follow", middlewareLoggedIn(handlerFollow))
 	cmds.register("following", middlewareLoggedIn(handlerFollowing))
 	cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
+	cmds.register("browse", middlewareLoggedIn(handlerBrowse))
 
 	return cmds
 }
@@ -56,6 +58,9 @@ func middlewareLoggedIn(handler func(s *state, cmd command, user database.User) 
 	return func(s *state, cmd command) error {
 		user, err := s.db.GetUser(context.Background(), s.config.Current_user_name)
 		if err != nil {
+			if !strings.Contains(err.Error(), "no rows in result set") {
+				return err
+			}
 			return errors.New("Error: Must be logged in to run this command. Use 'login' or 'register'.")
 		}
 		return handler(s, cmd, user)

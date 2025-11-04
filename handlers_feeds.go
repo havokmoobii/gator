@@ -56,7 +56,7 @@ func handlerFeeds(s *state, cmd command) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(feed.Name, "-", feed.Url, "-", username)
+		fmt.Println(feed.Name, "-", feed.Url, "- Added by:", username)
 	}
 
 	return nil

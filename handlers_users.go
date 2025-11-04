@@ -6,9 +6,12 @@ import (
 	"context"
 	"time"
 	"github.com/google/uuid"
+	"strings"
 
 	"github.com/havokmoobii/gator/internal/database"
 )
+
+
 
 func handlerLogin(s *state, cmd command) error {
 	
@@ -18,7 +21,10 @@ func handlerLogin(s *state, cmd command) error {
 
 	_, err := s.db.GetUser(context.Background(), cmd.arguments[0])
 	if err != nil {
-		return err
+		if !strings.Contains(err.Error(), "no rows in result set") {
+				return err
+			}
+			return errors.New("Error: Unknown user. Check spelling and capitalization or register a new user with gator register.")
 	}
 
 	err = s.config.SetUser(cmd.arguments[0])

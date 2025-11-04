@@ -6,6 +6,7 @@ import (
 	"context"
 	"time"
 	"github.com/google/uuid"
+	"strings"
 
 	"github.com/havokmoobii/gator/internal/database"
 )
@@ -17,7 +18,10 @@ func handlerFollow(s *state, cmd command, user database.User) error {
 
 	feed, err := s.db.GetFeed(context.Background(), cmd.arguments[0])
 	if err != nil {
-		return err
+		if !strings.Contains(err.Error(), "no rows in result set") {
+				return err
+			}
+			return errors.New("Error: Unknown feed. Check url or add feed with gator addfeed.")
 	}
 
 	feedFollowArgs := database.CreateFeedFollowParams{
@@ -58,7 +62,10 @@ func handlerUnfollow(s *state, cmd command, user database.User) error {
 
 	feed, err := s.db.GetFeed(context.Background(), cmd.arguments[0])
 	if err != nil {
-		return err
+		if !strings.Contains(err.Error(), "no rows in result set") {
+				return err
+			}
+			return errors.New("Error: Unknown feed. Check url.")
 	}
 
 	unfollowParams := database.DeleteFeedFollowParams{

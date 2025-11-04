@@ -1,5 +1,14 @@
 package main
 
+
+
+// Make a pass through all handlers with arguments and make them check for bad inputs
+
+
+
+
+
+
 import _ "github.com/lib/pq"
 
 import (
